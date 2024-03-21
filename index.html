@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN Travel Modal 0.2</title>
+    <title>TU DUBLIN Travel Modal 0.3</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -49,7 +49,7 @@
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
     // Define the points of the triangle
-    const scale = 1; // Scale factor (0.1 to 1, where 1 is full width and height)
+    const scale = 0.6;
     const points = [
         [(1 - scale) * width / 2, scale * height], // bottom-left
         [width / 2, (1 - scale) * height / 2], // top-center
@@ -85,9 +85,12 @@
         const publicTransportFactor = data.publicTransport / 100;
         const privateCarsFactor = data.privateCars / 100;
     
-        // Map the barycentric coordinates to the 2D space
-        const x = width * (publicTransportFactor + privateCarsFactor / 2) / (walkingFactor + publicTransportFactor + privateCarsFactor);
-        const y = height * (Math.sqrt(3) / 2 * privateCarsFactor) / (walkingFactor + publicTransportFactor + privateCarsFactor);
+        // Calculate the position of the point within the scaled triangle
+        const x = (points[1][0] - points[0][0]) * publicTransportFactor + 
+                  (points[2][0] - points[0][0]) * privateCarsFactor + points[0][0];
+        const y = (points[1][1] - points[0][1]) * publicTransportFactor + 
+                  (points[2][1] - points[0][1]) * privateCarsFactor + points[0][1];
+
     
         return { x: x, y: height - y }; // The y-coordinate is flipped because SVG coordinates start from the top-left corner
     }
