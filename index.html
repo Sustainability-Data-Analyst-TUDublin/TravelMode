@@ -73,36 +73,59 @@
 
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
-        // Barycentric coordinates based on slider values
+        // This function should map the percentages to a point in the triangle
         const total = data.walking + data.publicTransport + data.privateCars;
-        const walkingFactor = data.walking / total;
-        const publicTransportFactor = data.publicTransport / total;
-        const privateCarsFactor = data.privateCars / total;
-
-        // Calculate position
-        const x = points[0][0] * walkingFactor + points[1][0] * publicTransportFactor + points[2][0] * privateCarsFactor;
-        const y = points[0][1] * walkingFactor + points[1][1] * publicTransportFactor + points[2][1] * privateCarsFactor;
-
-        return { x, y };
+        if (total !== 100) {
+            // Prevent the calculation if the sum is not 100
+            return;
+        }
+    
+        // Calculate the barycentric coordinates
+        const walkingFactor = data.walking / 100;
+        const publicTransportFactor = data.publicTransport / 100;
+        const privateCarsFactor = data.privateCars / 100;
+    
+        // Map the barycentric coordinates to the 2D space
+        const x = width * (publicTransportFactor + privateCarsFactor / 2) / (walkingFactor + publicTransportFactor + privateCarsFactor);
+        const y = height * (Math.sqrt(3) / 2 * privateCarsFactor) / (walkingFactor + publicTransportFactor + privateCarsFactor);
+    
+        return { x: x, y: height - y }; // The y-coordinate is flipped because SVG coordinates start from the top-left corner
     }
 
     // Update function for sliders
     function updatePosition() {
+        // Adjust the other two sliders to make sure the total is 100
+        const walking = parseFloat(d3.select('#walkingSlider').property('value'));
+        const publicTransport = parseFloat(d3.select('#publicTransportSlider').property('value'));
+        const privateCars = parseFloat(d3.select('#privateCarsSlider').property('value'));
+        const total = walking + publicTransport + privateCars;
+        
+        // The slider that triggered the event keeps its value
+        // The other two sliders adjust proportionally to fill the remaining percentage
+        const adjustedPublicTransport = 100 * publicTransport / total;
+        const adjustedPrivateCars = 100 * privateCars / total;
+        const adjustedWalking = 100 * walking / total;
+    
+        // Update the actual sliders' positions
+        d3.select('#walkingSlider').property('value', adjustedWalking);
+        d3.select('#publicTransportSlider').property('value', adjustedPublicTransport);
+        d3.select('#privateCarsSlider').property('value', adjustedPrivateCars);
+    
         const data = {
-            walking: parseFloat(d3.select('#walkingSlider').property('value')),
-            publicTransport: parseFloat(d3.select('#publicTransportSlider').property('value')),
-            privateCars: parseFloat(d3.select('#privateCarsSlider').property('value'))
+            walking: adjustedWalking,
+            publicTransport: adjustedPublicTransport,
+            privateCars: adjustedPrivateCars
         };
-
+    
         const pointPosition = calculatePointPosition(data);
         userPoint
             .attr('cx', pointPosition.x)
             .attr('cy', pointPosition.y);
-
-        // Update slider values
-        d3.select('#walkingValue').text(data.walking.toFixed(0));
-        d3.select('#publicTransportValue').text(data.publicTransport.toFixed(0));
-        d3.select('#privateCarsValue').text(data.privateCars.toFixed(0));
+    
+        // Update slider values displayed to the user
+        d3.select('#walkingValue').text(adjustedWalking.toFixed(0));
+        d3.select('#publicTransportValue').text(adjustedPublicTransport.toFixed(0));
+        d3.select('#privateCarsValue').text(adjustedPrivateCars.toFixed(0));
     }
 
     // Initialize sliders with the event listener
