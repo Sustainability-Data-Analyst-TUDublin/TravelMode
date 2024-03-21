@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 0.3</title>
+    <title>TU DUBLIN 0.4</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -130,6 +130,52 @@
         d3.select('#publicTransportValue').text(adjustedPublicTransport.toFixed(0));
         d3.select('#privateCarsValue').text(adjustedPrivateCars.toFixed(0));
     }
+
+    // Adjusts the values of the other two sliders whenever one changes, to maintain the total at 100%
+    function adjustSliderValues(changedSlider) {
+        // Find out which sliders need to be adjusted
+        const sliders = ['walking', 'publicTransport', 'privateCars'];
+        const unchangedSliders = sliders.filter(s => s !== changedSlider);
+    
+        // Get the current total percentage
+        let total = sliders.reduce((acc, s) => acc + parseFloat(d3.select('#' + s + 'Slider').property('value')), 0);
+    
+        // Calculate the amount to adjust the other two sliders by
+        let adjustAmount = (100 - parseFloat(d3.select('#' + changedSlider + 'Slider').property('value'))) / unchangedSliders.length;
+    
+        // Adjust the other two sliders
+        unchangedSliders.forEach(s => {
+            let currentValue = parseFloat(d3.select('#' + s + 'Slider').property('value'));
+            let newValue = total > 100 ? currentValue - (total - 100) / 2 : adjustAmount;
+            d3.select('#' + s + 'Slider').property('value', newValue);
+            d3.select('#' + s + 'Value').text(newValue.toFixed(0));
+        });
+    }
+
+    // Attach event listeners to sliders
+    d3.selectAll('.slider').on('input', function() {
+        let changedSlider = this.name; // Get the name of the slider that was changed
+        adjustSliderValues(changedSlider); // Adjust the other two sliders
+    
+        // After adjustment, re-fetch the values and update the position
+        const data = {
+            walking: parseFloat(d3.select('#walkingSlider').property('value')),
+            publicTransport: parseFloat(d3.select('#publicTransportSlider').property('value')),
+            privateCars: parseFloat(d3.select('#privateCarsSlider').property('value'))
+        };
+    
+        // Update the position of the "You" circle
+        const pointPosition = calculatePointPosition(data);
+        userPoint
+            .attr('cx', pointPosition.x)
+            .attr('cy', pointPosition.y);
+    
+        // Update displayed slider values
+        d3.select('#walkingValue').text(data.walking.toFixed(0));
+        d3.select('#publicTransportValue').text(data.publicTransport.toFixed(0));
+        d3.select('#privateCarsValue').text(data.privateCars.toFixed(0));
+    });
+
 
     // Initialize sliders with the event listener
     d3.selectAll('.slider').on('input', updatePosition);
