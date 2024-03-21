@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 0.6</title>
+    <title>TU DUBLIN 0.7</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -73,23 +73,22 @@
 
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
-        // Assume equal distribution if the total isn't 100
+        // Normalize the data values to sum to 1
         const total = data.walking + data.publicTransport + data.privateCars;
-        if (total !== 100) {
-            data = { walking: 33.33, publicTransport: 33.33, privateCars: 33.33 };
-        }
-    
-        // Convert percentages to a range of 0-1
-        const walkingFactor = data.walking / 100;
-        const publicTransportFactor = data.publicTransport / 100;
-        const privateCarsFactor = data.privateCars / 100;
+        const walkingNormalized = data.walking / total;
+        const publicTransportNormalized = data.publicTransport / total;
+        const privateCarsNormalized = data.privateCars / total;
     
         // Calculate the position of the point within the triangle
-        const x = width * (0.5 * (publicTransportFactor + privateCarsFactor));
-        // The vertical position is calculated using the height of an equilateral triangle
-        const y = height * (1 - (Math.sqrt(3) / 2 * publicTransportFactor + Math.sqrt(3) / 2 * privateCarsFactor));
+        // The amount of each category determines the weight towards each vertex
+        const x = (points[2][0] * privateCarsNormalized) + 
+                  (points[1][0] * walkingNormalized) + 
+                  (points[0][0] * publicTransportNormalized);
+        const y = (points[2][1] * privateCarsNormalized) + 
+                  (points[1][1] * walkingNormalized) + 
+                  (points[0][1] * publicTransportNormalized);
     
-        return { x, y };
+        return { x: x, y: height - y };
     }
 
     // Update function for sliders
