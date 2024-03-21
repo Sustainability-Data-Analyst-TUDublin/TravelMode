@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 0.6</title>
+    <title>TU DUBLIN 0.4</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -51,9 +51,9 @@
     // Define the points of the triangle
     const scale = 0.6;
     const points = [
-        [width * 0.5 * (1 - scale), height * scale], // bottom-left
-        [width / 2, height * (1 - scale)], // top-center
-        [width - width * 0.5 * (1 - scale), height * scale] // bottom-right
+        [(1 - scale) * width / 2, scale * height], // bottom-left
+        [width / 2, (1 - scale) * height / 2], // top-center
+        [scale * width + (1 - scale) * width / 2, scale * height] // bottom-right
     ];
     
     // Draw the triangle
@@ -73,20 +73,27 @@
 
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
-        // Map the percentages to a point in the triangle using barycentric coordinates
+        // This function should map the percentages to a point in the triangle
+        const total = data.walking + data.publicTransport + data.privateCars;
+        if (total !== 100) {
+            // Prevent the calculation if the sum is not 100
+            return;
+        }
+    
+        // Calculate the barycentric coordinates
         const walkingFactor = data.walking / 100;
         const publicTransportFactor = data.publicTransport / 100;
         const privateCarsFactor = data.privateCars / 100;
-
+    
         // Calculate the position of the point within the scaled triangle
-        const x = (points[2][0] * privateCarsFactor) + 
-                  (points[1][0] * publicTransportFactor) + 
-                  (points[0][0] * walkingFactor);
-        const y = height - ((height - points[0][1]) * (privateCarsFactor + publicTransportFactor));
+        const x = (points[1][0] - points[0][0]) * publicTransportFactor + 
+                  (points[2][0] - points[0][0]) * privateCarsFactor + points[0][0];
+        const y = (points[1][1] - points[0][1]) * publicTransportFactor + 
+                  (points[2][1] - points[0][1]) * privateCarsFactor + points[0][1];
 
-        return { x, y };
+    
+        return { x: x, y: height - y }; // The y-coordinate is flipped because SVG coordinates start from the top-left corner
     }
-
 
     // Update function for sliders
     function updatePosition() {
@@ -128,30 +135,22 @@
     function adjustSliderValues(changedSlider) {
         // Find out which sliders need to be adjusted
         const sliders = ['walking', 'publicTransport', 'privateCars'];
-        const otherSliders = sliders.filter(s => s !== changedSlider);
+        const unchangedSliders = sliders.filter(s => s !== changedSlider);
     
-        // Get the current value of the changed slider
-        const changedValue = parseFloat(d3.select('#' + changedSlider + 'Slider').property('value'));
+        // Get the current total percentage
+        let total = sliders.reduce((acc, s) => acc + parseFloat(d3.select('#' + s + 'Slider').property('value')), 0);
     
-        // Calculate the amount left for the other two sliders
-        const remaining = 100 - changedValue;
+        // Calculate the amount to adjust the other two sliders by
+        let adjustAmount = (100 - parseFloat(d3.select('#' + changedSlider + 'Slider').property('value'))) / unchangedSliders.length;
     
-        // Distribute the remaining amount between the other two sliders
-        const otherValues = otherSliders.map(slider => parseFloat(d3.select('#' + slider + 'Slider').property('value')));
-        const otherTotal = otherValues.reduce((sum, value) => sum + value, 0);
-        
-        otherSliders.forEach(slider => {
-            let newValue;
-            if (otherTotal === 0) {
-                newValue = remaining / otherSliders.length;
-            } else {
-                newValue = remaining * (parseFloat(d3.select('#' + slider + 'Slider').property('value')) / otherTotal);
-            }
-            d3.select('#' + slider + 'Slider').property('value', newValue);
-            d3.select('#' + slider + 'Value').text(newValue.toFixed(0));
+        // Adjust the other two sliders
+        unchangedSliders.forEach(s => {
+            let currentValue = parseFloat(d3.select('#' + s + 'Slider').property('value'));
+            let newValue = total > 100 ? currentValue - (total - 100) / 2 : adjustAmount;
+            d3.select('#' + s + 'Slider').property('value', newValue);
+            d3.select('#' + s + 'Value').text(newValue.toFixed(0));
         });
     }
-
 
     // Attach event listeners to sliders
     d3.selectAll('.slider').on('input', function() {
@@ -164,7 +163,7 @@
             publicTransport: parseFloat(d3.select('#publicTransportSlider').property('value')),
             privateCars: parseFloat(d3.select('#privateCarsSlider').property('value'))
         };
-        
+    
         // Update the position of the "You" circle
         const pointPosition = calculatePointPosition(data);
         userPoint
@@ -175,14 +174,10 @@
         d3.select('#walkingValue').text(data.walking.toFixed(0));
         d3.select('#publicTransportValue').text(data.publicTransport.toFixed(0));
         d3.select('#privateCarsValue').text(data.privateCars.toFixed(0));
-    
-        // Ensure that we don't draw the point if the total isn't exactly 100
-        if (data.walking + data.publicTransport + data.privateCars === 100) {
-            userPoint.attr('cx', pointPosition.x).attr('cy', pointPosition.y);
-        }
-    }
+    });
 
-   // Initialize sliders with the event listener
+
+    // Initialize sliders with the event listener
     d3.selectAll('.slider').on('input', updatePosition);
 
     // Initial update for the position
@@ -191,5 +186,3 @@
 </script>
 </body>
 </html>
-
-       
