@@ -49,8 +49,13 @@
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
     // Define the points of the triangle
-    const points = [[0, height], [width / 2, 0], [width, height]];
-
+    const scale = 0.6; // Scale factor (0.1 to 1, where 1 is full width and height)
+    const points = [
+        [(1 - scale) * width / 2, scale * height], // bottom-left
+        [width / 2, (1 - scale) * height / 2], // top-center
+        [scale * width + (1 - scale) * width / 2, scale * height] // bottom-right
+    ];
+    
     // Draw the triangle
     svg.append('path')
         .attr('class', 'triangle')
