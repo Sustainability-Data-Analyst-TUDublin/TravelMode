@@ -57,7 +57,7 @@ function updateVisualization(/* parameters */) {
 // Function to initialize the chart
 function init() {
     // Load data from an external source or use provided data
-    d3.csv("data.csv").then(data => {
+    d3.csv("ModalShare.csv").then(data => {
         createInteractiveVisualization(data);
     });
 }
