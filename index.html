@@ -182,6 +182,9 @@
         }
     }
 
+   // Initialize sliders with the event listener
+    d3.selectAll('.slider').on('input', updatePosition);
+
     // Initial update for the position
     updatePosition();
 
