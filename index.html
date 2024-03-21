@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 0.5</title>
+    <title>TU DUBLIN 0.6</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -73,27 +73,23 @@
 
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
-        // This function should map the percentages to a point in the triangle
+        // Assume equal distribution if the total isn't 100
         const total = data.walking + data.publicTransport + data.privateCars;
-        
-        // Calculate the barycentric coordinates
-        const walkingFactor = data.walking / total;
-        const publicTransportFactor = data.publicTransport / total;
-        const privateCarsFactor = data.privateCars / total;
-        
-        // Calculate the position of the point within the scaled triangle
-        const x = (points[1][0] * publicTransportFactor) + 
-                  (points[2][0] * privateCarsFactor) + 
-                  (points[0][0] * walkingFactor);
-        const y = (points[1][1] * publicTransportFactor) + 
-                  (points[2][1] * privateCarsFactor) + 
-                  (points[0][1] * walkingFactor);
+        if (total !== 100) {
+            data = { walking: 33.33, publicTransport: 33.33, privateCars: 33.33 };
+        }
     
-        // Ensure the point stays within the bounds of the triangle by constraining x and y
-        const constrainedX = Math.max(points[0][0], Math.min(x, points[2][0]));
-        const constrainedY = Math.max(points[1][1], Math.min(y, points[1][1]));
+        // Convert percentages to a range of 0-1
+        const walkingFactor = data.walking / 100;
+        const publicTransportFactor = data.publicTransport / 100;
+        const privateCarsFactor = data.privateCars / 100;
     
-        return { x: constrainedX, y: height - constrainedY };
+        // Calculate the position of the point within the triangle
+        const x = width * (0.5 * (publicTransportFactor + privateCarsFactor));
+        // The vertical position is calculated using the height of an equilateral triangle
+        const y = height * (1 - (Math.sqrt(3) / 2 * publicTransportFactor + Math.sqrt(3) / 2 * privateCarsFactor));
+    
+        return { x, y };
     }
 
     // Update function for sliders
