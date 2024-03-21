@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 1.0</title>
+    <title>TU DUBLIN 1.1</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -73,22 +73,25 @@
 
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
-        const total = data.walking + data.publicTransport + data.privateCars;
-    
-        // Normalize the slider values to sum up to 1 (100%)
-        const walkingNormalized = data.walking / total;
-        const publicTransportNormalized = data.publicTransport / total;
-        const privateCarsNormalized = data.privateCars / total;
+        // Calculate the normalized percentages
+        const walkingNormalized = data.walking / 100;
+        const publicTransportNormalized = data.publicTransport / 100;
+        const privateCarsNormalized = data.privateCars / 100;
     
         // Calculate the position of the point using barycentric coordinates
+        // For the SVG, the origin is at the top-left corner, so we need to adjust the y-coordinate calculation
         const x = (points[0][0] * publicTransportNormalized) +
                   (points[1][0] * walkingNormalized) +
                   (points[2][0] * privateCarsNormalized);
-        const y = (points[0][1] * publicTransportNormalized) +
-                  (points[1][1] * walkingNormalized) +
-                  (points[2][1] * privateCarsNormalized);
     
-        return { x: x, y: height - y }; // SVG's y-axis is inverted, hence 'height - y'
+        // Since the y-coordinate increases as you go down the SVG, we subtract from the total height
+        const y = height - (
+            (height - points[0][1]) * publicTransportNormalized +
+            (height - points[1][1]) * walkingNormalized +
+            (height - points[2][1]) * privateCarsNormalized
+        );
+    
+        return { x: x, y: y };
     }
 
 
