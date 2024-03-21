@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 0.5</title>
+    <title>TU DUBLIN 0.6</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -51,9 +51,9 @@
     // Define the points of the triangle
     const scale = 0.6;
     const points = [
-        [(1 - scale) * width / 2, scale * height], // bottom-left
-        [width / 2, (1 - scale) * height / 2], // top-center
-        [scale * width + (1 - scale) * width / 2, scale * height] // bottom-right
+        [width * 0.5 * (1 - scale), height * scale], // bottom-left
+        [width / 2, height * (1 - scale)], // top-center
+        [width - width * 0.5 * (1 - scale), height * scale] // bottom-right
     ];
     
     // Draw the triangle
@@ -73,25 +73,18 @@
 
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
-        // This function should map the percentages to a point in the triangle
-        const total = data.walking + data.publicTransport + data.privateCars;
-    
-        // Calculate the barycentric coordinates
-        const walkingFactor = data.walking / total;
-        const publicTransportFactor = data.publicTransport / total;
-        const privateCarsFactor = data.privateCars / total;
-    
+        // Map the percentages to a point in the triangle using barycentric coordinates
+        const walkingFactor = data.walking / 100;
+        const publicTransportFactor = data.publicTransport / 100;
+        const privateCarsFactor = data.privateCars / 100;
+
         // Calculate the position of the point within the scaled triangle
-        const x = (points[1][0] - points[0][0]) * publicTransportFactor + 
-                  (points[2][0] - points[0][0]) * privateCarsFactor + points[0][0];
-        const y = (points[1][1] - points[0][1]) * publicTransportFactor + 
-                  (points[2][1] - points[0][1]) * privateCarsFactor + points[0][1];
-    
-        // Ensure the point stays within the bounds of the triangle
-        const withinBoundsX = Math.max(points[0][0], Math.min(x, points[2][0]));
-        const withinBoundsY = Math.max(points[0][1], Math.min(y, points[1][1]));
-    
-        return { x: withinBoundsX, y: height - withinBoundsY };
+        const x = (points[2][0] * privateCarsFactor) + 
+                  (points[1][0] * publicTransportFactor) + 
+                  (points[0][0] * walkingFactor);
+        const y = height - ((height - points[0][1]) * (privateCarsFactor + publicTransportFactor));
+
+        return { x, y };
     }
 
 
