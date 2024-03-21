@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 0.4</title>
+    <title>TU DUBLIN 0.5</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -75,24 +75,25 @@
     function calculatePointPosition(data) {
         // This function should map the percentages to a point in the triangle
         const total = data.walking + data.publicTransport + data.privateCars;
-        if (total !== 100) {
-            // Prevent the calculation if the sum is not 100
-            return;
-        }
-    
+        
         // Calculate the barycentric coordinates
-        const walkingFactor = data.walking / 100;
-        const publicTransportFactor = data.publicTransport / 100;
-        const privateCarsFactor = data.privateCars / 100;
-    
+        const walkingFactor = data.walking / total;
+        const publicTransportFactor = data.publicTransport / total;
+        const privateCarsFactor = data.privateCars / total;
+        
         // Calculate the position of the point within the scaled triangle
-        const x = (points[1][0] - points[0][0]) * publicTransportFactor + 
-                  (points[2][0] - points[0][0]) * privateCarsFactor + points[0][0];
-        const y = (points[1][1] - points[0][1]) * publicTransportFactor + 
-                  (points[2][1] - points[0][1]) * privateCarsFactor + points[0][1];
-
+        const x = (points[1][0] * publicTransportFactor) + 
+                  (points[2][0] * privateCarsFactor) + 
+                  (points[0][0] * walkingFactor);
+        const y = (points[1][1] * publicTransportFactor) + 
+                  (points[2][1] * privateCarsFactor) + 
+                  (points[0][1] * walkingFactor);
     
-        return { x: x, y: height - y }; // The y-coordinate is flipped because SVG coordinates start from the top-left corner
+        // Ensure the point stays within the bounds of the triangle by constraining x and y
+        const constrainedX = Math.max(points[0][0], Math.min(x, points[2][0]));
+        const constrainedY = Math.max(points[1][1], Math.min(y, points[1][1]));
+    
+        return { x: constrainedX, y: height - constrainedY };
     }
 
     // Update function for sliders
