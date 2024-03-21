@@ -1,124 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Interactive Radar Chart</title>
+    <title>Interactive Ternary Plot</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
-        .radar-area {
-            fill: steelblue;
-            fill-opacity: 0.5;
-            stroke: steelblue;
-            stroke-width: 2;
+        .triangle {
+            stroke: #000;
+            stroke-width: 1;
+            fill: none;
+        }
+
+        .user-point {
+            fill: #f00;
+            stroke: #000;
+            stroke-width: 1;
         }
     </style>
 </head>
 <body>
-    <div>
-        <label for="walkingSlider">Walking (%): </label>
-        <input type="range" id="walkingSlider" class="slider" min="0" max="100" value="33">
-        <span id="walkingValue">33</span>%
-    </div>
-    <div>
-        <label for="publicTransportSlider">Public Transport (%): </label>
-        <input type="range" id="publicTransportSlider" class="slider" min="0" max="100" value="33">
-        <span id="publicTransportValue">33</span>%
-    </div>
-    <div>
-        <label for="privateCarsSlider">Private Cars (%): </label>
-        <input type="range" id="privateCarsSlider" class="slider" min="0" max="100" value="34">
-        <span id="privateCarsValue">34</span>%
-    </div>
 
-    <div id="radarChart"></div>
+<div>
+    <label for="walkingSlider">Walking (%): </label>
+    <input type="range" id="walkingSlider" name="walking" class="slider" min="0" max="100" value="33">
+    <span id="walkingValue">33</span>%
+</div>
+<div>
+    <label for="publicTransportSlider">Public Transport (%): </label>
+    <input type="range" id="publicTransportSlider" name="publicTransport" class="slider" min="0" max="100" value="33">
+    <span id="publicTransportValue">33</span>%
+</div>
+<div>
+    <label for="privateCarsSlider">Private Cars (%): </label>
+    <input type="range" id="privateCarsSlider" name="privateCars" class="slider" min="0" max="100" value="34">
+    <span id="privateCarsValue">34</span>%
+</div>
 
-    <script>
-        let data = {
-            'Walking': 33,
-            'PublicTransport': 33,
-            'PrivateCars': 34
+<div id="trianglePlot"></div>
+
+<script>
+    const width = 600, height = 600;
+    const margin = { top: 30, right: 30, bottom: 30, left: 30 };
+
+    const svg = d3.select('#trianglePlot').append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // Define the points of the triangle
+    const points = [[0, height], [width / 2, 0], [width, height]];
+
+    // Draw the triangle
+    svg.append('path')
+        .attr('class', 'triangle')
+        .attr('d', `M ${points.join('L ')} Z`);
+
+    // Initial position of the user point
+    const initialPoint = calculatePointPosition({ walking: 33, publicTransport: 33, privateCars: 34 });
+
+    // User point element
+    const userPoint = svg.append('circle')
+        .attr('class', 'user-point')
+        .attr('r', 5)
+        .attr('cx', initialPoint.x)
+        .attr('cy', initialPoint.y);
+
+    // Function to calculate point position based on slider values
+    function calculatePointPosition(data) {
+        // Barycentric coordinates based on slider values
+        const total = data.walking + data.publicTransport + data.privateCars;
+        const walkingFactor = data.walking / total;
+        const publicTransportFactor = data.publicTransport / total;
+        const privateCarsFactor = data.privateCars / total;
+
+        // Calculate position
+        const x = points[0][0] * walkingFactor + points[1][0] * publicTransportFactor + points[2][0] * privateCarsFactor;
+        const y = points[0][1] * walkingFactor + points[1][1] * publicTransportFactor + points[2][1] * privateCarsFactor;
+
+        return { x, y };
+    }
+
+    // Update function for sliders
+    function updatePosition() {
+        const data = {
+            walking: parseFloat(d3.select('#walkingSlider').property('value')),
+            publicTransport: parseFloat(d3.select('#publicTransportSlider').property('value')),
+            privateCars: parseFloat(d3.select('#privateCarsSlider').property('value'))
         };
 
-        function updateVisualization(data) {
-            // The function to draw and update the radar chart.
-            // It should be called every time the data changes.
+        const pointPosition = calculatePointPosition(data);
+        userPoint
+            .attr('cx', pointPosition.x)
+            .attr('cy', pointPosition.y);
 
-            // Clear the existing chart
-            d3.select("#radarChart").selectAll("*").remove();
+        // Update slider values
+        d3.select('#walkingValue').text(data.walking.toFixed(0));
+        d3.select('#publicTransportValue').text(data.publicTransport.toFixed(0));
+        d3.select('#privateCarsValue').text(data.privateCars.toFixed(0));
+    }
 
-            // Set the dimensions of the chart
-            const width = 600,
-                  height = 600,
-                  margin = { top: 100, right: 100, bottom: 100, left: 100 };
+    // Initialize sliders with the event listener
+    d3.selectAll('.slider').on('input', updatePosition);
 
-            // Calculate the radius of the chart
-            const radius = Math.min(width / 2, height / 2) - Math.max(margin.top, margin.right, margin.bottom, margin.left);
+    // Initial update for the position
+    updatePosition();
 
-            // The scale for the distance from the center of the chart
-            const rScale = d3.scaleLinear()
-                             .range([0, radius])
-                             .domain([0, 100]); // Assuming the data values are percentages
+</script>
+</body>
+</html>
 
-            // Create an SVG for the radar chart
-            const svg = d3.select("#radarChart").append("svg")
-                          .attr("width", width)
-                          .attr("height", height)
-                          .append("g")
-                          .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")");
-
-            // Convert the data to points on the radar chart
-            const points = [];
-            const angleSlice = Math.PI * 2 / Object.keys(data).length;
-            Object.keys(data).forEach((key, i) => {
-                const angle = angleSlice * i;
-                points.push([
-                    rScale(data[key]) * Math.cos(angle - Math.PI / 2),
-                    rScale(data[key]) * Math.sin(angle - Math.PI / 2)
-                ]);
-            });
-
-            // Close the path by adding the first point at the end
-            points.push(points[0]);
-
-            // Draw the path for the radar chart
-            const line = d3.line();
-            svg.append("path")
-                .datum(points)
-                .attr("class", "radar-area")
-                .attr("d", line)
-                .style("fill", "steelblue")
-                .style("fill-opacity", 0.5)
-                .style("stroke", "steelblue")
-                .style("stroke-width", 2);
-        }
-
-        // Attach event listeners to sliders
-        d3.selectAll(".slider").on("input", function() {
-            // Get the new value from the slider
-            const newPercentage = +this.value;
-            const mode = this.id.split('Slider')[0];
-            data[mode] = newPercentage;
-
-            // Update the display of the percentage
-            d3.select(`#${mode}Value`).text(newPercentage);
-
-            // Update the radar chart with the new data
-            updateVisualization(data);
-        });
-
-        // Draw the initial radar chart
-        updateVisualization(data);
-    
-        // Function to update the sliders text
-        function updateSliders() {
-            document.getElementById('walkingValue').textContent = data.Walking;
-            document.getElementById('publicTransportValue').textContent = data.PublicTransport;
-            document.getElementById('privateCarsValue').textContent = data.PrivateCars;
-        }
-    
-        // Set the initial slider values
-        updateSliders();
-    
-    </script>
-    </body>
-    </html>
+       
