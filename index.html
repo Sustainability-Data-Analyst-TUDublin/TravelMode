@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 0.8</title>
+    <title>TU DUBLIN 0.9</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -73,31 +73,24 @@
 
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
-        // Normalize the data values to sum to 1
+        // Calculate the normalized percentages
         const total = data.walking + data.publicTransport + data.privateCars;
         const walkingNormalized = data.walking / total;
         const publicTransportNormalized = data.publicTransport / total;
         const privateCarsNormalized = data.privateCars / total;
     
-        // Calculate the position of the point within the triangle
-        // Each factor contributes to the weight towards the respective vertex of the triangle
-        const x = (points[2][0] * privateCarsNormalized) + 
-                  (points[1][0] * walkingNormalized) + 
-                  (points[0][0] * publicTransportNormalized);
-        const y = (points[2][1] * privateCarsNormalized) + 
-                  (points[1][1] * walkingNormalized) + 
-                  (points[0][1] * publicTransportNormalized);
+        // Calculate the position of the point using barycentric coordinates
+        const x = (points[1][0] * walkingNormalized) + 
+                  (points[0][0] * publicTransportNormalized) + 
+                  (points[2][0] * privateCarsNormalized);
+        const y = (points[1][1] * walkingNormalized) + 
+                  (points[0][1] * publicTransportNormalized) + 
+                  (points[2][1] * privateCarsNormalized);
     
-        // Calculate the centroid if all values are zero
-        if (total === 0) {
-            return {
-                x: (points[0][0] + points[1][0] + points[2][0]) / 3,
-                y: (points[0][1] + points[1][1] + points[2][1]) / 3
-            };
-        }
-    
-        return { x: x, y: height - y }; // Adjust for SVG coordinates
+        // SVG y-coordinates are flipped, the top is y=0 and increases downwards
+        return { x: x, y: height - y };
     }
+
 
     // Update function for sliders
     function updatePosition() {
