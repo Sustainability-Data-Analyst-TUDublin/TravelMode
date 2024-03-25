@@ -21,9 +21,9 @@
 <body>
 
 <div>
-    <label for="walkingSlider">Walking (%): </label>
-    <input type="range" id="walkingSlider" name="walking" class="slider" min="0" max="100" value="33">
-    <span id="walkingValue">33</span>%
+    <label for="activeSlider">Active (%): </label>
+    <input type="range" id="activeSlider" name="active" class="slider" min="0" max="100" value="33">
+    <span id="activeValue">33</span>%
 </div>
 <div>
     <label for="publicTransportSlider">Public Transport (%): </label>
@@ -62,7 +62,7 @@
         .attr('d', `M ${points.join('L ')} Z`);
 
     // Initial position of the user point
-    const initialPoint = calculatePointPosition({ walking: 33, publicTransport: 33, privateCars: 34 });
+    const initialPoint = calculatePointPosition({ active: 33, publicTransport: 33, privateCars: 34 });
 
     // User point element
     const userPoint = svg.append('circle')
@@ -74,20 +74,20 @@
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
         // Calculate the normalized percentages
-        const walkingNormalized = data.walking / 100;
+        const activeNormalized = data.active / 100;
         const publicTransportNormalized = data.publicTransport / 100;
         const privateCarsNormalized = data.privateCars / 100;
     
         // Calculate the position of the point using barycentric coordinates
         // For the SVG, the origin is at the top-left corner, so we need to adjust the y-coordinate calculation
         const x = (points[0][0] * publicTransportNormalized) +
-                  (points[1][0] * walkingNormalized) +
+                  (points[1][0] * activeNormalized) +
                   (points[2][0] * privateCarsNormalized);
     
         // Since the y-coordinate increases as you go down the SVG, we subtract from the total height
         const y = height - (
             (height - points[0][1]) * publicTransportNormalized +
-            (height - points[1][1]) * walkingNormalized +
+            (height - points[1][1]) * activeNormalized +
             (height - points[2][1]) * privateCarsNormalized
         );
     
@@ -98,24 +98,24 @@
     // Update function for sliders
     function updatePosition() {
         // Adjust the other two sliders to make sure the total is 100
-        const walking = parseFloat(d3.select('#walkingSlider').property('value'));
+        const active = parseFloat(d3.select('#activeSlider').property('value'));
         const publicTransport = parseFloat(d3.select('#publicTransportSlider').property('value'));
         const privateCars = parseFloat(d3.select('#privateCarsSlider').property('value'));
-        const total = walking + publicTransport + privateCars;
+        const total = active + publicTransport + privateCars;
         
         // The slider that triggered the event keeps its value
         // The other two sliders adjust proportionally to fill the remaining percentage
         const adjustedPublicTransport = 100 * publicTransport / total;
         const adjustedPrivateCars = 100 * privateCars / total;
-        const adjustedWalking = 100 * walking / total;
+        const adjustedActive = 100 * active / total;
     
         // Update the actual sliders' positions
-        d3.select('#walkingSlider').property('value', adjustedWalking);
+        d3.select('#activeSlider').property('value', adjustedActive);
         d3.select('#publicTransportSlider').property('value', adjustedPublicTransport);
         d3.select('#privateCarsSlider').property('value', adjustedPrivateCars);
     
         const data = {
-            walking: adjustedWalking,
+            active: adjustedActive,
             publicTransport: adjustedPublicTransport,
             privateCars: adjustedPrivateCars
         };
@@ -126,7 +126,7 @@
             .attr('cy', pointPosition.y);
     
         // Update slider values displayed to the user
-        d3.select('#walkingValue').text(adjustedWalking.toFixed(0));
+        d3.select('#activeValue').text(adjustedActive.toFixed(0));
         d3.select('#publicTransportValue').text(adjustedPublicTransport.toFixed(0));
         d3.select('#privateCarsValue').text(adjustedPrivateCars.toFixed(0));
     }
@@ -134,7 +134,7 @@
     // Adjusts the values of the other two sliders whenever one changes, to maintain the total at 100%
     function adjustSliderValues(changedSlider) {
         // Find out which sliders need to be adjusted
-        const sliders = ['walking', 'publicTransport', 'privateCars'];
+        const sliders = ['active', 'publicTransport', 'privateCars'];
         const unchangedSliders = sliders.filter(s => s !== changedSlider);
     
         // Get the current total percentage
@@ -159,7 +159,7 @@
             // For each city, calculate its position and add a circle to the SVG
             cities.forEach(function(city) {
                 const point = calculatePointPosition({
-                    walking: +city.Walking, 
+                    active: +city.Active, 
                     publicTransport: +city.PublicTransport, 
                     privateCars: +city.PrivateCars
                 });
@@ -192,7 +192,7 @@
     
         // After adjustment, re-fetch the values and update the position
         const data = {
-            walking: parseFloat(d3.select('#walkingSlider').property('value')),
+            active: parseFloat(d3.select('#activeSlider').property('value')),
             publicTransport: parseFloat(d3.select('#publicTransportSlider').property('value')),
             privateCars: parseFloat(d3.select('#privateCarsSlider').property('value'))
         };
@@ -204,7 +204,7 @@
             .attr('cy', pointPosition.y);
     
         // Update displayed slider values
-        d3.select('#walkingValue').text(data.walking.toFixed(0));
+        d3.select('#activeValue').text(data.active.toFixed(0));
         d3.select('#publicTransportValue').text(data.publicTransport.toFixed(0));
         d3.select('#privateCarsValue').text(data.privateCars.toFixed(0));
     });
