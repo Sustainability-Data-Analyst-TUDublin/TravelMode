@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 1.1</title>
+    <title>TU DUBLIN 1.2</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -152,6 +152,39 @@
         });
     }
 
+    // Function to initialize the chart with city data
+    function init() {
+        // Load the CSV data
+        d3.csv("path_to_your_dataset.csv").then(function(cities) {
+            // For each city, calculate its position and add a circle to the SVG
+            cities.forEach(function(city) {
+                const point = calculatePointPosition({
+                    walking: +city.Walking, 
+                    publicTransport: +city.PublicTransport, 
+                    privateCars: +city.PrivateCars
+                });
+    
+                // Add the circle for each city
+                svg.append('circle')
+                    .attr('cx', point.x)
+                    .attr('cy', point.y)
+                    .attr('r', 5) // Or some logic to determine size based on city population
+                    .attr('fill', 'gray') // Or any other logic for color
+                    .attr('stroke', 'black')
+                    .on('mouseover', function(d) {
+                        // Show tooltip with city info
+                        d3.select(this).attr('fill', 'orange'); // Highlight
+                        showTooltip(city);
+                    })
+                    .on('mouseout', function(d) {
+                        // Hide tooltip
+                        d3.select(this).attr('fill', 'gray'); // Remove highlight
+                        hideTooltip();
+                    });
+            });
+        });
+    }
+
     // Attach event listeners to sliders
     d3.selectAll('.slider').on('input', function() {
         let changedSlider = this.name; // Get the name of the slider that was changed
@@ -175,6 +208,17 @@
         d3.select('#publicTransportValue').text(data.publicTransport.toFixed(0));
         d3.select('#privateCarsValue').text(data.privateCars.toFixed(0));
     });
+
+    // Function to show tooltip
+    function showTooltip(city) {
+        // Code to display the tooltip with city name and data
+        // This could be a div element that to position and fill with data
+    }
+    
+    // Function to hide tooltip
+    function hideTooltip() {
+        // Code to hide the tooltip
+    }
 
 
     // Initialize sliders with the event listener
