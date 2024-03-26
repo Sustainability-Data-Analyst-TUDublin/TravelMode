@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 1.3</title>
+    <title>TU DUBLIN 1.4</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -35,6 +35,9 @@
     <input type="range" id="privateCarsSlider" name="privateCars" class="slider" min="0" max="100" value="34">
     <span id="privateCarsValue">34</span>%
 </div>
+    
+<button id="toggleCities">Toggle Cities</button>
+<div id="tooltip" style="position: absolute; visibility: hidden; background-color: white; border: 1px solid black; padding: 5px;"></div>
 
 <div id="trianglePlot"></div>
 
@@ -152,6 +155,32 @@
         });
     }
 
+
+    // Function to show tooltip
+    function showTooltip(city, coords) {
+        const tooltip = d3.select('#tooltip');
+        tooltip.style('visibility', 'visible')
+               .style('top', (coords.y + 'px'))
+               .style('left', (coords.x + 'px'))
+               .html('City: ' + city.City + '<br>' +
+                     'Active: ' + city.Active + '<br>' +
+                     'Public Transport: ' + city.PublicTransport + '<br>' +
+                     'Private Cars: ' + city.PrivateCars);
+    }
+    
+    // Function to hide tooltip
+    function hideTooltip() {
+        const tooltip = d3.select('#tooltip');
+        tooltip.style('visibility', 'hidden');
+    }
+
+    let citiesDisplayed = false;
+    // Add a button toggle event listener
+    d3.select('#toggleCities').on('click', function() {
+        citiesDisplayed = !citiesDisplayed;
+        svg.selectAll('.city-circle').style('visibility', citiesDisplayed ? 'visible' : 'hidden');
+    });
+
     // Function to initialize the chart with city data
     function init() {
         // Load the CSV data
@@ -166,24 +195,26 @@
     
                 // Add the circle for each city
                 svg.append('circle')
+                    .attr('class', 'city-circle')
                     .attr('cx', point.x)
                     .attr('cy', point.y)
-                    .attr('r', 5) // Or some logic to determine size based on city population
-                    .attr('fill', 'gray') // Or any other logic for color
+                    .attr('r', 5) // Adjust radius based on city size if needed
+                    .attr('fill', 'gray') // Customize as needed
                     .attr('stroke', 'black')
+                    .style('visibility', 'hidden') // Start with cities hidden
                     .on('mouseover', function(d) {
-                        // Show tooltip with city info
                         d3.select(this).attr('fill', 'orange'); // Highlight
-                        showTooltip(city);
+                        showTooltip(city, { x: d3.event.pageX, y: d3.event.pageY });
                     })
                     .on('mouseout', function(d) {
-                        // Hide tooltip
                         d3.select(this).attr('fill', 'gray'); // Remove highlight
                         hideTooltip();
                     });
             });
         });
     }
+
+    
 
     // Attach event listeners to sliders
     d3.selectAll('.slider').on('input', function() {
@@ -209,23 +240,15 @@
         d3.select('#privateCarsValue').text(data.privateCars.toFixed(0));
     });
 
-    // Function to show tooltip
-    function showTooltip(city) {
-        // Code to display the tooltip with city name and data
-        // This could be a div element that to position and fill with data
-    }
-    
-    // Function to hide tooltip
-    function hideTooltip() {
-        // Code to hide the tooltip
-    }
-
 
     // Initialize sliders with the event listener
     d3.selectAll('.slider').on('input', updatePosition);
 
     // Initial update for the position
     updatePosition();
+
+    // Call init to start the visualization
+    init();
 
 </script>
 </body>
