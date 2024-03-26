@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 1.4</title>
+    <title>TU DUBLIN 1.5</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -189,8 +189,8 @@
             cities.forEach(function(city) {
                 const point = calculatePointPosition({
                     active: +city.Active, 
-                    publicTransport: +city.PublicTransport, 
-                    privateCars: +city.PrivateCars
+                    publicTransport: +city.Bus, // Changed to 'Bus'
+                    privateCars: +city.Car // Changed to 'Car'
                 });
     
                 // Add the circle for each city
@@ -213,6 +213,7 @@
             });
         });
     }
+
 
     
 
