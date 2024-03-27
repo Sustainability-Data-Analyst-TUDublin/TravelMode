@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 2.2</title>
+    <title>TU DUBLIN 2.3</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -158,33 +158,46 @@
     addIconWithBackground(publicTransportPosition, 'b.png', 'lightblue');
     addIconWithBackground(privateCarsPosition, 'c.png', 'lightcoral'); // using 'lightcoral' as a light red color
     
-    // Define the positions for the edge icons based on the triangle corners
-    const activeIconPosition = { x: points[1][0], y: points[1][1] + 10 }; // below the top corner
-    const publicTransportIconPosition = { x: points[0][0] - 30, y: points[0][1] }; // left of the left corner
-    const privateCarsIconPosition = { x: points[2][0] + 10, y: points[2][1] }; // right of the right corner
+    // Define the middle points for each side of the triangle
+    const activeMidPoint = {
+        x: (points[0][0] + points[1][0]) / 2,
+        y: (points[0][1] + points[1][1]) / 2
+    };
+    const publicTransportMidPoint = {
+        x: (points[1][0] + points[2][0]) / 2,
+        y: (points[1][1] + points[2][1]) / 2
+    };
+    const privateCarsMidPoint = {
+        x: (points[2][0] + points[0][0]) / 2,
+        y: (points[2][1] + points[0][1]) / 2
+    };
     
-    // Function to add an icon with a background color beside the edge
-    function addEdgeIcon(position, iconFile, backgroundColor) {
-        // Add the background color as a circle
+    // Adjust this function to position the icons at the middle points of each side
+    function addEdgeIcon(midPoint, iconFile, backgroundColor) {
+        // Calculate position offset for the icon
+        const xOffset = iconSize / 2;
+        const yOffset = Math.sqrt(3) / 6 * (width / 2); // height of an equilateral triangle
+    
+        // Add the background circle
         svg.append('circle')
-            .attr('cx', position.x)
-            .attr('cy', position.y)
-            .attr('r', 10) // Radius of the background circle
+            .attr('cx', midPoint.x)
+            .attr('cy', midPoint.y + yOffset) // Adjust y position to move the icon outside the triangle
+            .attr('r', backgroundSize / 2)
             .attr('fill', backgroundColor);
-    
+      
         // Add the icon image
         svg.append('image')
             .attr('href', iconFile)
-            .attr('x', position.x - 10) // Offset to center the icon within the circle
-            .attr('y', position.y - 10)
-            .attr('width', 20)
-            .attr('height', 20);
+            .attr('x', midPoint.x - xOffset) // Center the icon horizontally
+            .attr('y', midPoint.y - xOffset + yOffset) // Adjust y position to move the icon outside the triangle
+            .attr('width', iconSize)
+            .attr('height', iconSize);
     }
     
-    // Add the edge icons
-    addEdgeIcon(activeIconPosition, 'a.png', 'yellow');
-    addEdgeIcon(publicTransportIconPosition, 'b.png', 'lightblue');
-    addEdgeIcon(privateCarsIconPosition, 'c.png', 'lightcoral');
+    // Add the edge icons at the midpoint of each side
+    addEdgeIcon(activeMidPoint, 'a.png', 'yellow');
+    addEdgeIcon(publicTransportMidPoint, 'b.png', 'lightblue');
+    addEdgeIcon(privateCarsMidPoint, 'c.png', 'lightcoral');
 
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
