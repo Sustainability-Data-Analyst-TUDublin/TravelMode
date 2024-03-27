@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 3.1</title>
+    <title>TU DUBLIN 3.2</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -173,8 +173,8 @@
     
     // This function is adjusted to place the icons at the midpoints just outside the triangle sides
     function addEdgeIcon(midPoint, iconFile, backgroundColor) {
-        const offsetDistance = 60; // Increase this value to move the icons further out
-        const additionalYOffset = 30; // Increase this value to move the icons further up
+        const offsetDistance = 80; // Increase this value to move the icons further out
+        const additionalYOffset = 40; // Increase this value to move the icons further up
     
         // Calculate the outward direction from the triangle's center
         const outwardVector = {
@@ -403,19 +403,19 @@
                .attr("x", labelPosSide1.x)
                .attr("y", labelPosSide1.y - 5) // Offset the label a bit above the line
                .attr("text-anchor", "middle")
-               .text(`${(1 - step) * 100}%`); // Changed to decrease from 100%
+               .text(`${(1 - step) * 100}.toFixed(0)}%`); // Changed to decrease from 100%
             
             svg.append("text")
                .attr("x", labelPosSide2.x)
                .attr("y", labelPosSide2.y + 15) // Offset the label a bit below the line
                .attr("text-anchor", "middle")
-               .text(`${(1 - step) * 100}%`); // Changed to decrease from 100%
+               .text(`${(1 - step) * 100}.toFixed(0)}%`); // Changed to decrease from 100%
             
             svg.append("text")
                .attr("x", labelPosSide3.x - 15) // Offset the label a bit to the left of the line
                .attr("y", labelPosSide3.y + 5)
                .attr("text-anchor", "end")
-               .text(`${step * 100}%`); // Changed to increase from 0%
+               .text(`${(1 - step) * 100}.toFixed(0)}%`); // Changed to increase from 0%
         }
     }
 
