@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TU DUBLIN 1.5</title>
+    <title>TU DUBLIN 1.6</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -188,9 +188,9 @@
             // For each city, calculate its position and add a circle to the SVG
             cities.forEach(function(city) {
                 const point = calculatePointPosition({
-                    active: +city.Active, 
-                    publicTransport: +city.Bus, // Changed to 'Bus'
-                    privateCars: +city.Car // Changed to 'Car'
+                    active: +city.Active,       // Corresponds to the 'Active' column
+                    publicTransport: +city.Bus, // Corresponds to the 'Bus' column
+                    privateCars: +city.Car      // Corresponds to the 'Car' column
                 });
     
                 // Add the circle for each city
@@ -212,7 +212,7 @@
                     });
             });
         }).catch(function(error) {
-            console.error("Error loading the CSV file: ", error);
+            console.error("Error loading or processing the CSV file:", error);
         });
     }
 
