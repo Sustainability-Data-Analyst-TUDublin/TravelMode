@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 2.3</title>
+    <title>TU DUBLIN 2.4</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -55,7 +55,7 @@
 
 <div>
     <label for="activeSlider">
-        <img src="a.png" class="icon-background" style="background-color: yellow;" />
+        //<img src="a.png" class="icon-background" style="background-color: yellow;" />
         Active (%): 
     </label>
     <input type="range" id="activeSlider" name="active" class="slider" min="0" max="100" value="33">
@@ -63,7 +63,7 @@
 </div>
 <div>
     <label for="publicTransportSlider">
-        <img src="b.png" class="icon-background" style="background-color: lightblue;" />
+        //<img src="b.png" class="icon-background" style="background-color: lightblue;" />
         Public Transport (%): 
     </label>
     
@@ -72,7 +72,7 @@
 </div>
 <div>
     <label for="privateCarsSlider">
-        <img src="c.png" class="icon-background" style="background-color: lightcoral;" />
+        //<img src="c.png" class="icon-background" style="background-color: lightcoral;" />
         Private Cars (%): 
     </label>
     <input type="range" id="privateCarsSlider" name="privateCars" class="slider" min="0" max="100" value="34">
@@ -160,41 +160,59 @@
     
     // Define the middle points for each side of the triangle
     const activeMidPoint = {
-        x: (points[0][0] + points[1][0]) / 2,
-        y: (points[0][1] + points[1][1]) / 2
-    };
-    const publicTransportMidPoint = {
         x: (points[1][0] + points[2][0]) / 2,
         y: (points[1][1] + points[2][1]) / 2
+    };
+    const publicTransportMidPoint = {
+        x: (points[0][0] + points[1][0]) / 2,
+        y: (points[0][1] + points[1][1]) / 2
     };
     const privateCarsMidPoint = {
         x: (points[2][0] + points[0][0]) / 2,
         y: (points[2][1] + points[0][1]) / 2
     };
     
-    // Adjust this function to position the icons at the middle points of each side
+    // This function is adjusted to place the icons at the midpoints just outside the triangle sides
     function addEdgeIcon(midPoint, iconFile, backgroundColor) {
-        // Calculate position offset for the icon
-        const xOffset = iconSize / 2;
-        const yOffset = Math.sqrt(3) / 6 * (width / 2); // height of an equilateral triangle
+        // Determine the distance to offset the icon outside the triangle
+        const offsetDistance = 10; // Adjust as needed
     
-        // Add the background circle
+        // Calculate the offset vector for the midpoint
+        const offsetVector = {
+            x: midPoint.x - width / 2,
+            y: midPoint.y - Math.sqrt(3) / 6 * height
+        };
+    
+        // Normalize the offset vector
+        const vectorLength = Math.sqrt(offsetVector.x ** 2 + offsetVector.y ** 2);
+        const normalizedVector = {
+            x: offsetVector.x / vectorLength,
+            y: offsetVector.y / vectorLength
+        };
+    
+        // Calculate the new position using the offset vector
+        const newPosition = {
+            x: midPoint.x + normalizedVector.x * offsetDistance,
+            y: midPoint.y + normalizedVector.y * offsetDistance
+        };
+    
+        // Add the background circle at the new position
         svg.append('circle')
-            .attr('cx', midPoint.x)
-            .attr('cy', midPoint.y + yOffset) // Adjust y position to move the icon outside the triangle
+            .attr('cx', newPosition.x)
+            .attr('cy', newPosition.y)
             .attr('r', backgroundSize / 2)
             .attr('fill', backgroundColor);
-      
-        // Add the icon image
+    
+        // Add the icon image at the new position
         svg.append('image')
             .attr('href', iconFile)
-            .attr('x', midPoint.x - xOffset) // Center the icon horizontally
-            .attr('y', midPoint.y - xOffset + yOffset) // Adjust y position to move the icon outside the triangle
+            .attr('x', newPosition.x - iconSize / 2)
+            .attr('y', newPosition.y - iconSize / 2)
             .attr('width', iconSize)
             .attr('height', iconSize);
     }
     
-    // Add the edge icons at the midpoint of each side
+    // Call the function to add icons at the new midpoints just outside the triangle sides
     addEdgeIcon(activeMidPoint, 'a.png', 'yellow');
     addEdgeIcon(publicTransportMidPoint, 'b.png', 'lightblue');
     addEdgeIcon(privateCarsMidPoint, 'c.png', 'lightcoral');
