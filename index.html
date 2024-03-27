@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 3.5</title>
+    <title>TU DUBLIN 3.6</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -400,13 +400,13 @@
     
             // Add percentage label to the SVG for each side
             svg.append("text")
-               .attr("x", labelPosSide1.x - 10) // Adjusted to move further left
+               .attr("x", labelPosSide1.x - 15) // Adjusted to move further left
                .attr("y", labelPosSide1.y - 5) // Offset the label a bit above the line
                .attr("text-anchor", "middle")
                .text(`${((1 - step) * 100).toFixed(0)}%`); // Rounded to nearest integer
             
             svg.append("text")
-               .attr("x", labelPosSide2.x + 20) // Adjusted to move further right
+               .attr("x", labelPosSide2.x + 25) // Adjusted to move further right
                .attr("y", labelPosSide2.y + 15) // Offset the label a bit below the line
                .attr("text-anchor", "middle")
                .text(`${((1 - step) * 100).toFixed(0)}%`); // Rounded to nearest integer
