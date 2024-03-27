@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 2.0</title>
+    <title>TU DUBLIN 2.1</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -88,6 +88,11 @@
     // Icon and background sizes
     const iconSize = 20; // Size of the icons
     const backgroundSize = 25; // Size of the background circles
+
+    // Define positions for the icons on the SVG
+    const activePosition = { x: 50, y: 50 }; // Adjust as needed
+    const publicTransportPosition = { x: 100, y: 50 }; // Adjust as needed
+    const privateCarsPosition = { x: 150, y: 50 }; // Adjust as needed
 
     function addIconWithBackground(position, iconFile, backgroundColor) {
         // Add the background circle
