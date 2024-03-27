@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 1.9</title>
+    <title>TU DUBLIN 2.0</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -84,6 +84,33 @@
         .attr('height', imageSize) // Height of the image
         .attr('x', initialPoint.x - (imageSize / 2)) // Center the image on the point
         .attr('y', initialPoint.y - (imageSize / 2));
+
+    // Icon and background sizes
+    const iconSize = 20; // Size of the icons
+    const backgroundSize = 25; // Size of the background circles
+
+    function addIconWithBackground(position, iconFile, backgroundColor) {
+        // Add the background circle
+        svg.append('circle')
+            .attr('cx', position.x)
+            .attr('cy', position.y)
+            .attr('r', backgroundSize / 2)
+            .attr('fill', backgroundColor);
+    
+        // Add the icon image on top of the background circle
+        svg.append('image')
+            .attr('href', iconFile)
+            .attr('width', iconSize)
+            .attr('height', iconSize)
+            .attr('x', position.x - iconSize / 2)
+            .attr('y', position.y - iconSize / 2);
+    }
+
+    // Add icons with backgrounds
+    addIconWithBackground(activePosition, 'a.png', 'yellow');
+    addIconWithBackground(publicTransportPosition, 'b.png', 'lightblue');
+    addIconWithBackground(privateCarsPosition, 'c.png', 'lightcoral'); // using 'lightcoral' as a light red color
+    
 
 
     // Function to calculate point position based on slider values
