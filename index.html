@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 1.8</title>
+    <title>TU DUBLIN 1.9</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -68,14 +68,22 @@
     // Initial position of the user point
     const initialPoint = calculatePointPosition({ active: 33, publicTransport: 33, privateCars: 34 });
 
+    // Add a black circle as the background for the image
+    const imageSize = 20; // Size of the image
+    svg.append('circle')
+        .attr('class', 'user-point-background')
+        .attr('cx', initialPoint.x)
+        .attr('cy', initialPoint.y)
+        .attr('r', imageSize / 2) // The radius to cover the image size
+        .attr('fill', 'black');
+
     // User point element
     const userPoint = svg.append('image')
         .attr('href', 'you.png') // Path to your image
-        .attr('width', 20) // Width of the image
-        .attr('height', 20) // Height of the image
-        // Position the image center at the calculated point
-        .attr('x', initialPoint.x - 10) // Shift by half the width of the image to center
-        .attr('y', initialPoint.y - 10); // Shift by half the height of the image to center
+        .attr('width', imageSize) // Width of the image
+        .attr('height', imageSize) // Height of the image
+        .attr('x', initialPoint.x - (imageSize / 2)) // Center the image on the point
+        .attr('y', initialPoint.y - (imageSize / 2));
 
 
     // Function to calculate point position based on slider values
@@ -128,9 +136,13 @@
         };
     
         const pointPosition = calculatePointPosition(data);
+        svg.select('.user-point-background') // Select the background circle and update its position
+            .attr('cx', pointPosition.x)
+            .attr('cy', pointPosition.y);
+
         userPoint
-            .attr('x', pointPosition.x - 10) // Center the image on the calculated point
-            .attr('y', pointPosition.y - 10);
+            .attr('x', pointPosition.x - (imageSize / 2)) // Center the image on the new point
+            .attr('y', pointPosition.y - (imageSize / 2));
         
         // Update slider values displayed to the user
         d3.select('#activeValue').text(adjustedActive.toFixed(0));
