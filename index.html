@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 2.4</title>
+    <title>TU DUBLIN 2.5</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -55,7 +55,7 @@
 
 <div>
     <label for="activeSlider">
-        /* <img src="a.png" class="icon-background" style="background-color: yellow;" /> */
+        <img src="a.png" class="icon-background" style="background-color: yellow;" />
         Active (%): 
     </label>
     <input type="range" id="activeSlider" name="active" class="slider" min="0" max="100" value="33">
@@ -63,7 +63,7 @@
 </div>
 <div>
     <label for="publicTransportSlider">
-        /* <img src="b.png" class="icon-background" style="background-color: lightblue;" /> */
+        <img src="b.png" class="icon-background" style="background-color: lightblue;" />
         Public Transport (%): 
     </label>
     
@@ -72,7 +72,7 @@
 </div>
 <div>
     <label for="privateCarsSlider">
-        /* <img src="c.png" class="icon-background" style="background-color: lightcoral;" /> */
+        <img src="c.png" class="icon-background" style="background-color: lightcoral;" />
         Private Cars (%): 
     </label>
     <input type="range" id="privateCarsSlider" name="privateCars" class="slider" min="0" max="100" value="34">
@@ -121,7 +121,7 @@
 
     // User point element
     const userPoint = svg.append('image')
-        .attr('href', 'you.png') // Path to your image
+        .attr('href', 'you.png') // Path to you.png image
         .attr('width', imageSize) // Width of the image
         .attr('height', imageSize) // Height of the image
         .attr('x', initialPoint.x - (imageSize / 2)) // Center the image on the point
@@ -175,7 +175,7 @@
     // This function is adjusted to place the icons at the midpoints just outside the triangle sides
     function addEdgeIcon(midPoint, iconFile, backgroundColor) {
         // Determine the distance to offset the icon outside the triangle
-        const offsetDistance = 10; // Adjust as needed
+        const offsetDistance = 20; // Adjust as needed
     
         // Calculate the offset vector for the midpoint
         const offsetVector = {
