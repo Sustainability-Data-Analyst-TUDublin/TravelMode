@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 3.1</title>
+    <title>TU DUBLIN 2.9</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -364,38 +364,6 @@
         });
     }
 
-    // Function to add grid lines inside the triangle
-    function addGridLines() {
-        const numGridLines = 10; // How many grid lines per side
-        const gridIncrement = 1 / (numGridLines + 1);
-    
-        for (let i = 1; i <= numGridLines; i++) {
-            const t = gridIncrement * i;
-    
-            // Calculate intersection points for grid lines
-            const fromSide1 = ...; // Calculate point from side 1
-            const toSide2 = ...; // Calculate point to side 2
-            const fromSide2 = ...; // Calculate point from side 2
-            const toSide3 = ...; // Calculate point to side 3
-            const fromSide3 = ...; // Calculate point from side 3
-            const toSide1 = ...; // Calculate point to side 1
-    
-            // Append line elements for the grid lines
-            svg.append('line').attr('x1', fromSide1.x).attr('y1', fromSide1.y)
-                .attr('x2', toSide2.x).attr('y2', toSide2.y)
-                .attr('stroke', 'lightgray').attr('stroke-width', 1);
-            
-            svg.append('line').attr('x1', fromSide2.x).attr('y1', fromSide2.y)
-                .attr('x2', toSide3.x).attr('y2', toSide3.y)
-                .attr('stroke', 'lightgray').attr('stroke-width', 1);
-
-            svg.append('line').attr('x1', fromSide3.x).attr('y1', fromSide3.y)
-                .attr('x2', toSide1.x).attr('y2', toSide1.y)
-                .attr('stroke', 'lightgray').attr('stroke-width', 1);
-            }
-    }
-
-
     
     // Attach event listeners to sliders
     d3.selectAll('.slider').on('input', function() {
@@ -431,8 +399,6 @@
     // Call init to start the visualization
     init();
 
-    // Call the function to add grid lines
-    addGridLines();
 
 
 </script>
