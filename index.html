@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 3.0</title>
+    <title>TU DUBLIN 3.1</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -11,43 +11,42 @@
             stroke-width: 1;
             fill: none;
         }
-
         .user-point {
             fill: #f00;
             stroke: #000;
             stroke-width: 1;
         }
-
-        /* Style for icon backgrounds next to slider labels */
         .icon-background {
             vertical-align: middle;
             display: inline-block;
-            width: 20px; /* Set the width of the icon background */
-            height: 20px; /* Set the height of the icon background */
-            border-radius: 50%; /* Make it round */
-            margin-right: 8px; /* Space between icon and text */
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
         }
-
-        /* Additional styles */
-        /* Style for tooltip */
         #tooltip {
             position: absolute;
             visibility: hidden;
             background-color: white;
             border: 1px solid black;
             padding: 5px;
-            pointer-events: none; /* So it doesn't interfere with mouse events */
-            z-index: 10; /* Place tooltip above other elements */
+            pointer-events: none;
+            z-index: 10;
         }
-
-        /* You may also move inline styles here for cleaner HTML */
-        /* For example, the style for the Toggle Cities button */
         #toggleCities {
             background-color: #f8f9fa;
             border: 1px solid #ddd;
             padding: 5px 10px;
             cursor: pointer;
             margin-bottom: 10px;
+        }
+        text.grid-label {
+            font-size: 10px;
+            fill: #777;
+        }
+        line.grid-line {
+            stroke: #ddd;
+            stroke-width: 0.5;
         }
     </style>
 </head>
@@ -174,8 +173,8 @@
     
     // This function is adjusted to place the icons at the midpoints just outside the triangle sides
     function addEdgeIcon(midPoint, iconFile, backgroundColor) {
-        const offsetDistance = 50; // You mentioned using 50; adjust this value to move the icons further out
-        const additionalYOffset = 20; // New variable to move the icons further up
+        const offsetDistance = 60; // Increase this value to move the icons further out
+        const additionalYOffset = 30; // Increase this value to move the icons further up
     
         // Calculate the outward direction from the triangle's center
         const outwardVector = {
@@ -404,19 +403,19 @@
                .attr("x", labelPosSide1.x)
                .attr("y", labelPosSide1.y - 5) // Offset the label a bit above the line
                .attr("text-anchor", "middle")
-               .text(`${i * 10}%`);
-    
+               .text(`${(1 - step) * 100}%`); // Changed to decrease from 100%
+            
             svg.append("text")
                .attr("x", labelPosSide2.x)
                .attr("y", labelPosSide2.y + 15) // Offset the label a bit below the line
                .attr("text-anchor", "middle")
-               .text(`${i * 10}%`);
-    
+               .text(`${(1 - step) * 100}%`); // Changed to decrease from 100%
+            
             svg.append("text")
                .attr("x", labelPosSide3.x - 15) // Offset the label a bit to the left of the line
                .attr("y", labelPosSide3.y + 5)
                .attr("text-anchor", "end")
-               .text(`${i * 10}%`);
+               .text(`${step * 100}%`); // Changed to increase from 0%
         }
     }
 
