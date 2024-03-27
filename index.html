@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 2.9</title>
+    <title>TU DUBLIN 3.0</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -329,6 +329,108 @@
         svg.selectAll('.city-circle').style('visibility', citiesDisplayed ? 'visible' : 'hidden');
     });
 
+
+    // Interpolate between two points
+    function interpolate(start, end, percentage) {
+        return {
+            x: start[0] + (end[0] - start[0]) * percentage,
+            y: start[1] + (end[1] - start[1]) * percentage
+        };
+    }
+
+
+
+    // Add grid lines to the triangle plot
+    function addGridLines() {
+        const numGridLines = 10; // How many grid lines you want
+    
+        // Create grid lines parallel to each side of the triangle
+        for (let i = 1; i < numGridLines; i++) {
+            const step = i / numGridLines;
+    
+            // From and to points for lines parallel to each side of the triangle
+            const fromSide1 = interpolate(points[0], points[1], step);
+            const toSide1 = interpolate(points[0], points[2], step);
+            const fromSide2 = interpolate(points[1], points[2], step);
+            const toSide2 = interpolate(points[1], points[0], step);
+            const fromSide3 = interpolate(points[2], points[0], step);
+            const toSide3 = interpolate(points[2], points[1], step);
+    
+            // Add grid lines to the SVG for each side
+            svg.append("line")
+               .attr("x1", fromSide1.x)
+               .attr("y1", fromSide1.y)
+               .attr("x2", toSide1.x)
+               .attr("y2", toSide1.y)
+               .attr("stroke", "lightgrey")
+               .attr("stroke-width", 0.5)
+               .attr("stroke-dasharray", "3, 3");
+    
+            svg.append("line")
+               .attr("x1", fromSide2.x)
+               .attr("y1", fromSide2.y)
+               .attr("x2", toSide2.x)
+               .attr("y2", toSide2.y)
+               .attr("stroke", "lightgrey")
+               .attr("stroke-width", 0.5)
+               .attr("stroke-dasharray", "3, 3");
+    
+            svg.append("line")
+               .attr("x1", fromSide3.x)
+               .attr("y1", fromSide3.y)
+               .attr("x2", toSide3.x)
+               .attr("y2", toSide3.y)
+               .attr("stroke", "lightgrey")
+               .attr("stroke-width", 0.5)
+               .attr("stroke-dasharray", "3, 3");
+        }
+    }
+    
+    // Add percentage labels to the edges of the triangle plot
+    function addPercentageLabels() {
+        const numLabels = 10; // Number of labels per side
+    
+        // Create labels along each side
+        for (let i = 0; i <= numLabels; i++) {
+            const step = i / numLabels;
+    
+            // Label positions for each side
+            const labelPosSide1 = interpolate(points[0], points[1], step);
+            const labelPosSide2 = interpolate(points[1], points[2], step);
+            const labelPosSide3 = interpolate(points[2], points[0], step);
+    
+            // Add percentage label to the SVG for each side
+            svg.append("text")
+               .attr("x", labelPosSide1.x)
+               .attr("y", labelPosSide1.y - 5) // Offset the label a bit above the line
+               .attr("text-anchor", "middle")
+               .text(`${i * 10}%`);
+    
+            svg.append("text")
+               .attr("x", labelPosSide2.x)
+               .attr("y", labelPosSide2.y + 15) // Offset the label a bit below the line
+               .attr("text-anchor", "middle")
+               .text(`${i * 10}%`);
+    
+            svg.append("text")
+               .attr("x", labelPosSide3.x - 15) // Offset the label a bit to the left of the line
+               .attr("y", labelPosSide3.y + 5)
+               .attr("text-anchor", "end")
+               .text(`${i * 10}%`);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    
+
     // Function to initialize the chart with city data
     function init() {
         // Load the CSV data
@@ -359,10 +461,15 @@
                         hideTooltip();
                     });
             });
+
+            // Add grid lines and percentage labels
+            addGridLines();
+            addPercentageLabels();
         }).catch(function(error) {
             console.error("Error loading or processing the CSV file:", error);
         });
     }
+    
 
     
     // Attach event listeners to sliders
