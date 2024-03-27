@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 2.8</title>
+    <title>TU DUBLIN 2.9</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -174,43 +174,44 @@
     
     // This function is adjusted to place the icons at the midpoints just outside the triangle sides
     function addEdgeIcon(midPoint, iconFile, backgroundColor) {
-        // Determine the distance to offset the icon outside the triangle
-        const offsetDistance = 50; // Adjust as needed
+        const offsetDistance = 50; // You mentioned using 50; adjust this value to move the icons further out
+        const additionalYOffset = 20; // New variable to move the icons further up
     
-        // Calculate the offset vector for the midpoint
-        const offsetVector = {
+        // Calculate the outward direction from the triangle's center
+        const outwardVector = {
             x: midPoint.x - width / 2,
-            y: midPoint.y - Math.sqrt(3) / 6 * height
+            y: midPoint.y - (height / 2 * Math.sqrt(3) / 3) // Adjusting for the center of the triangle
         };
     
-        // Normalize the offset vector
-        const vectorLength = Math.sqrt(offsetVector.x ** 2 + offsetVector.y ** 2);
-        const normalizedVector = {
-            x: offsetVector.x / vectorLength,
-            y: offsetVector.y / vectorLength
+        // Normalize the outward vector
+        const length = Math.sqrt(outwardVector.x ** 2 + outwardVector.y ** 2);
+        const normalizedOutwardVector = {
+            x: outwardVector.x / length,
+            y: outwardVector.y / length
         };
     
-        // Calculate the new position using the offset vector
-        const newPosition = {
-            x: midPoint.x + normalizedVector.x * offsetDistance,
-            y: midPoint.y + normalizedVector.y * offsetDistance
+        // Apply the offset and the additional Y offset to move the icon
+        const finalPosition = {
+            x: midPoint.x + normalizedOutwardVector.x * offsetDistance,
+            y: midPoint.y + normalizedOutwardVector.y * offsetDistance - additionalYOffset
         };
     
-        // Add the background circle at the new position
+        // Add the background circle at the final position
         svg.append('circle')
-            .attr('cx', newPosition.x)
-            .attr('cy', newPosition.y)
+            .attr('cx', finalPosition.x)
+            .attr('cy', finalPosition.y)
             .attr('r', backgroundSize / 2)
             .attr('fill', backgroundColor);
     
-        // Add the icon image at the new position
+        // Add the icon image at the final position
         svg.append('image')
             .attr('href', iconFile)
-            .attr('x', newPosition.x - iconSize / 2)
-            .attr('y', newPosition.y - iconSize / 2)
+            .attr('x', finalPosition.x - iconSize / 2)
+            .attr('y', finalPosition.y - iconSize / 2)
             .attr('width', iconSize)
             .attr('height', iconSize);
     }
+
     
     // Call the function to add icons at the new midpoints just outside the triangle sides
     addEdgeIcon(activeMidPoint, 'a.png', 'yellow');
