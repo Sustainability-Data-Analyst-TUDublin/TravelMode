@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 1.7</title>
+    <title>TU DUBLIN 1.8</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -69,11 +69,14 @@
     const initialPoint = calculatePointPosition({ active: 33, publicTransport: 33, privateCars: 34 });
 
     // User point element
-    const userPoint = svg.append('circle')
-        .attr('class', 'user-point')
-        .attr('r', 5)
-        .attr('cx', initialPoint.x)
-        .attr('cy', initialPoint.y);
+    const userPoint = svg.append('image')
+        .attr('href', 'you.png') // Path to your image
+        .attr('width', 20) // Width of the image
+        .attr('height', 20) // Height of the image
+        // Position the image center at the calculated point
+        .attr('x', initialPoint.x - 10) // Shift by half the width of the image to center
+        .attr('y', initialPoint.y - 10); // Shift by half the height of the image to center
+
 
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
@@ -126,9 +129,9 @@
     
         const pointPosition = calculatePointPosition(data);
         userPoint
-            .attr('cx', pointPosition.x)
-            .attr('cy', pointPosition.y);
-    
+            .attr('x', pointPosition.x - 10) // Center the image on the calculated point
+            .attr('y', pointPosition.y - 10);
+        
         // Update slider values displayed to the user
         d3.select('#activeValue').text(adjustedActive.toFixed(0));
         d3.select('#publicTransportValue').text(adjustedPublicTransport.toFixed(0));
