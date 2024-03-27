@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 2.9</title>
+    <title>TU DUBLIN 3.0</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -364,9 +364,32 @@
         });
     }
 
-
+    // Function to add percentage scales
+    function addPercentageScales() {
+        const numScales = 10; // How many scales (not including the 0% and 100%)
+        const percentageIncrement = 100 / (numScales + 1);
     
-
+        for (let i = 1; i <= numScales; i++) {
+            const percentage = percentageIncrement * i;
+            
+            // Position calculation for percentage labels on each side
+            // The position needs to be calculated based on the triangle's points
+            // This is a simplified version and may need to be adjusted
+            const posActive = { x: ... , y: ... }; // Calculate the x and y positions for active label
+            const posPublic = { x: ... , y: ... }; // Calculate the x and y positions for public transport label
+            const posPrivate = { x: ... , y: ... }; // Calculate the x and y positions for private cars label
+            
+            // Append text elements for the percentage labels
+            svg.append('text').attr('x', posActive.x).attr('y', posActive.y)
+                .text(`${percentage}%`).attr('text-anchor', 'middle');
+            
+            svg.append('text').attr('x', posPublic.x).attr('y', posPublic.y)
+                .text(`${percentage}%`).attr('text-anchor', 'middle');
+            
+            svg.append('text').attr('x', posPrivate.x).attr('y', posPrivate.y)
+                .text(`${percentage}%`).attr('text-anchor', 'middle');
+        }
+    }
     // Attach event listeners to sliders
     d3.selectAll('.slider').on('input', function() {
         let changedSlider = this.name; // Get the name of the slider that was changed
@@ -400,6 +423,9 @@
 
     // Call init to start the visualization
     init();
+
+    // Call the function to add percentage scales
+    addPercentageScales();
 
 </script>
 </body>
