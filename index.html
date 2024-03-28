@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 5.3</title>
+    <title>TU DUBLIN 5.4</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         .triangle {
@@ -173,7 +173,7 @@
     };
     
     // This function is adjusted to place the icons at the midpoints just outside the triangle sides
-    function addEdgeIcon(midPoint, iconFile, backgroundColor) {
+    function addEdgeIcon(midPoint, iconFile, backgroundColor, percentage) {
         const offsetDistance = 80; // Increase this value to move the icons further out
         const additionalYOffset = 40; // Increase this value to move the icons further up
     
@@ -210,7 +210,7 @@
             .attr('y', finalPosition.y - iconSize / 2)
             .attr('width', iconSize)
             .attr('height', iconSize);
-        
+    
         // Add the percentage label below the icon
         svg.append('text')
             .attr('class', 'percentage-label')
@@ -225,6 +225,9 @@
     addEdgeIcon(activeMidPoint, 'a.png', 'yellow', '33%');
     addEdgeIcon(publicTransportMidPoint, 'b.png', 'lightblue', '33%');
     addEdgeIcon(privateCarsMidPoint, 'c.png', 'lightcoral', '34%');
+    // addEdgeIcon(activeMidPoint, 'a.png', 'yellow');
+    // addEdgeIcon(publicTransportMidPoint, 'b.png', 'lightblue');
+    // addEdgeIcon(privateCarsMidPoint, 'c.png', 'lightcoral');
 
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
