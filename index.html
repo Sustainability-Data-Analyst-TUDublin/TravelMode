@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 4.0</title>
+    <title>TU DUBLIN 4.1</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -422,9 +422,9 @@
             // For each city, calculate its position and add a circle to the SVG
             cities.forEach(function(city) {
                 const point = calculatePointPosition({
-                    active: +city.Active,        // Column name: Active
-                    publicTransport: +city.Bus,  // Column name: Bus
-                    privateCars: +city.Car       // Column name: Car
+                    active: +city.Active,          // Column name: Active
+                    publicTransport: +city.Bus,    // Column name: Bus
+                    privateCars: +city.Car         // Column name: Car
                 });
     
                 // Add the circle for each city
