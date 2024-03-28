@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 4.6</title>
+    <title>TU DUBLIN 4.7</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -327,16 +327,14 @@
     d3.select('#toggleCities').on('click', function() {
         citiesDisplayed = !citiesDisplayed;
         svg.selectAll('.city-circle').style('visibility', citiesDisplayed ? 'visible' : 'hidden');
+        
+        // Change button color when pressed
+        if (citiesDisplayed) {
+            d3.select(this).style('background-color', '#45a049');
+        } else {
+            d3.select(this).style('background-color', '#4CAF50');
+        }
     });
-
-
-    // Interpolate between two points
-    function interpolate(start, end, percentage) {
-        return {
-            x: start[0] + (end[0] - start[0]) * percentage,
-            y: start[1] + (end[1] - start[1]) * percentage
-        };
-    }
 
 
 
