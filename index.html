@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 5.1</title>
+    <title>TU DUBLIN 5.2</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         .triangle {
@@ -210,6 +210,14 @@
             .attr('y', finalPosition.y - iconSize / 2)
             .attr('width', iconSize)
             .attr('height', iconSize);
+        
+        // Add the percentage label below the icon
+        svg.append('text')
+            .attr('class', 'percentage-label')
+            .attr('x', finalPosition.x)
+            .attr('y', finalPosition.y + 30) // Adjust vertical position
+            .attr('text-anchor', 'middle')
+            .text(percentage);
     }
 
     
