@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 4.9</title>
+    <title>TU DUBLIN 5.0</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         .triangle {
@@ -63,7 +63,7 @@
         Active (%): 
     </label>
     <input type="range" id="activeSlider" name="active" class="slider" min="0" max="100" value="33">
-    <span id="activeValue">33</span>%
+    <span id="activeValue" class="slider-value">33%</span>
 </div>
 <div>
     <label for="publicTransportSlider">
@@ -72,7 +72,7 @@
     </label>
     
     <input type="range" id="publicTransportSlider" name="publicTransport" class="slider" min="0" max="100" value="33">
-    <span id="publicTransportValue">33</span>%
+    <span id="publicTransportValue" class="slider-value">33%</span>
 </div>
 <div>
     <label for="privateCarsSlider">
@@ -80,7 +80,7 @@
         Private Cars (%): 
     </label>
     <input type="range" id="privateCarsSlider" name="privateCars" class="slider" min="0" max="100" value="34">
-    <span id="privateCarsValue">34</span>%
+    <span id="privateCarsValue" class="slider-value">34%</span>
 </div>
     
 <button id="toggleCities" class="toggle-button">Toggle Cities</button>
@@ -425,6 +425,30 @@
         }
     }
 
+    // Function to update the position of percentage labels under the icons on the triangle graph
+    function updatePercentageLabels() {
+        // Update positions for percentage labels under icons
+        svg.selectAll('.percentage-label')
+            .data(['Active', 'Public Transport', 'Private Cars'])
+           .enter()
+           .append('text')
+           .attr('class', 'percentage-label')
+           .attr('text-anchor', 'middle')
+           .text('0%')
+           .attr("x", function(d, i) {
+               // Adjust x-position based on icon position
+               if (i === 0) return activePosition.x - 10; // Adjusted to move further left
+               else if (i === 1) return publicTransportPosition.x - 10; // Adjusted to move further left
+               else return privateCarsPosition.x - 10; // Adjusted to move further left
+           })
+           .attr("y", function(d, i) {
+               // Adjust y-position based on icon position
+               if (i === 0) return activePosition.y + 20; // Adjusted to move further down
+               else if (i === 1) return publicTransportPosition.y + 20; // Adjusted to move further down
+               else return privateCarsPosition.y + 20; // Adjusted to move further down
+           });
+    }
+
 
     // Function to initialize the chart with city data
     function init() {
@@ -501,6 +525,9 @@
 
     // Initialize sliders with the event listener
     d3.selectAll('.slider').on('input', updatePosition);
+
+    // Call function to update the position of percentage labels under icons
+    updatePercentageLabels();
 
     // Initial update for the position
     updatePosition();
