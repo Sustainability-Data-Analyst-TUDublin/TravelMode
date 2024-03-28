@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 5.4</title>
+    <title>TU DUBLIN 5.5</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         .triangle {
@@ -222,12 +222,14 @@
 
     
     // Call the function to add icons at the new midpoints just outside the triangle sides
-    addEdgeIcon(activeMidPoint, 'a.png', 'yellow', '33%');
-    addEdgeIcon(publicTransportMidPoint, 'b.png', 'lightblue', '33%');
-    addEdgeIcon(privateCarsMidPoint, 'c.png', 'lightcoral', '34%');
+    addEdgeIcon(activeMidPoint, 'a.png', 'yellow', adjustedActive);
+    addEdgeIcon(publicTransportMidPoint, 'b.png', 'lightblue', adjustedPublicTransport);
+    addEdgeIcon(privateCarsMidPoint, 'c.png', 'lightcoral', adjustedPrivateCars);
     // addEdgeIcon(activeMidPoint, 'a.png', 'yellow');
     // addEdgeIcon(publicTransportMidPoint, 'b.png', 'lightblue');
     // addEdgeIcon(privateCarsMidPoint, 'c.png', 'lightcoral');
+
+    
 
     // Function to calculate point position based on slider values
     function calculatePointPosition(data) {
