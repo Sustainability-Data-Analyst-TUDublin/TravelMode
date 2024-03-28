@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 5.0</title>
+    <title>TU DUBLIN 5.1</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         .triangle {
@@ -456,46 +456,41 @@
             // Add grid lines and percentage labels
             addGridLines();
             addPercentageLabels();
-    
-            // Create a group for each city
-            const cityGroups = svg.selectAll(".city-group")
-                .data(cities)
-                .enter()
-                .append("g")
-                .attr("class", "city-group")
-                .style("visibility", "hidden");
-    
-            // Add a circle and tooltip to each city group
-            cityGroups.each(function(city) {
-                const group = d3.select(this);
-                const point = calculatePointPosition({
-                    active: +city.Active,
-                    publicTransport: +city.Bus,
-                    privateCars: +city.Car
-                });
-    
-                // Append a circle for each city
-                group.append('circle')
-                    .attr('cx', point.x)
-                    .attr('cy', point.y)
-                    .attr('r', 5) // Adjust radius based on city size if needed
-                    .attr('fill', 'gray') // Customize as needed
-                    .attr('stroke', 'black')
-                    .on('mouseover', function(d) {
-                        d3.select(this).attr('fill', 'orange'); // Highlight
-                        showTooltip(city, { x: d3.event.pageX, y: d3.event.pageY });
-                    })
-                    .on('mouseout', function(d) {
-                        d3.select(this).attr('fill', 'gray'); // Remove highlight
-                        hideTooltip();
-                    });
-            });
+            createCityGroups(cities);
         }).catch(function(error) {
             console.error("Error loading or processing the CSV file:", error);
         });
     }
 
-   
+    // Function to create groups for each city and add circles and tooltips
+    function createCityGroups(cities) {
+        const cityGroups = svg.selectAll(".city-group")
+            .data(cities)
+            .enter()
+            .append("g")
+            .attr("class", "city-group")
+            .style("visibility", "hidden");
+
+        cityGroups.each(function(city) {
+            const group = d3.select(this);
+            const point = calculatePointPosition(city);
+
+            group.append('circle')
+                .attr('cx', point.x)
+                .attr('cy', point.y)
+                .attr('r', 5) // Adjust radius based on city size if needed
+                .attr('fill', 'gray') // Customize as needed
+                .attr('stroke', 'black')
+                .on('mouseover', function(d) {
+                    d3.select(this).attr('fill', 'orange'); // Highlight
+                    showTooltip(city, { x: d3.event.pageX, y: d3.event.pageY });
+                })
+                .on('mouseout', function(d) {
+                    d3.select(this).attr('fill', 'gray'); // Remove highlight
+                    hideTooltip();
+                });
+        });
+    }
 
     
     // Attach event listeners to sliders
