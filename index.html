@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 3.9</title>
+    <title>TU DUBLIN 4.0</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -415,16 +415,6 @@
     }
 
 
-
-
-
-
-
-
-
-
-    
-
     // Function to initialize the chart with city data
     function init() {
         // Load the CSV data
@@ -432,9 +422,9 @@
             // For each city, calculate its position and add a circle to the SVG
             cities.forEach(function(city) {
                 const point = calculatePointPosition({
-                    active: +city.Active,       // Corresponds to the 'Active' column
-                    publicTransport: +city.Bus, // Corresponds to the 'Bus' column
-                    privateCars: +city.Car      // Corresponds to the 'Car' column
+                    active: +city.Active,        // Column name: Active
+                    publicTransport: +city.Bus,  // Column name: Bus
+                    privateCars: +city.Car       // Column name: Car
                 });
     
                 // Add the circle for each city
@@ -464,7 +454,7 @@
         });
     }
 
-    
+   
 
     
     // Attach event listeners to sliders
