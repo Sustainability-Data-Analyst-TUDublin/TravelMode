@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 4.2</title>
+    <title>TU DUBLIN 4.3</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -419,6 +419,10 @@
     function init() {
         // Load the CSV data
         d3.csv("ModalShare.csv").then(function(cities) {
+            // Add grid lines and percentage labels
+            addGridLines();
+            addPercentageLabels();
+    
             // Create a group for each city
             const cityGroups = svg.selectAll(".city-group")
                 .data(cities)
@@ -452,10 +456,6 @@
                         hideTooltip();
                     });
             });
-    
-            // Add grid lines and percentage labels
-            addGridLines();
-            addPercentageLabels();
         }).catch(function(error) {
             console.error("Error loading or processing the CSV file:", error);
         });
