@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TU DUBLIN 4.1</title>
+    <title>TU DUBLIN 4.2</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <style>
         .triangle {
@@ -419,23 +419,30 @@
     function init() {
         // Load the CSV data
         d3.csv("ModalShare.csv").then(function(cities) {
-            // For each city, calculate its position and add a circle to the SVG
-            cities.forEach(function(city) {
+            // Create a group for each city
+            const cityGroups = svg.selectAll(".city-group")
+                .data(cities)
+                .enter()
+                .append("g")
+                .attr("class", "city-group")
+                .style("visibility", "hidden");
+    
+            // Add a circle and tooltip to each city group
+            cityGroups.each(function(city) {
+                const group = d3.select(this);
                 const point = calculatePointPosition({
-                    active: +city.Active,          // Column name: Active
-                    publicTransport: +city.Bus,    // Column name: Bus
-                    privateCars: +city.Car         // Column name: Car
+                    active: +city.Active,
+                    publicTransport: +city.Bus,
+                    privateCars: +city.Car
                 });
     
-                // Add the circle for each city
-                svg.append('circle')
-                    .attr('class', 'city-circle')
+                // Append a circle for each city
+                group.append('circle')
                     .attr('cx', point.x)
                     .attr('cy', point.y)
                     .attr('r', 5) // Adjust radius based on city size if needed
                     .attr('fill', 'gray') // Customize as needed
                     .attr('stroke', 'black')
-                    .style('visibility', 'hidden') // Start with cities hidden
                     .on('mouseover', function(d) {
                         d3.select(this).attr('fill', 'orange'); // Highlight
                         showTooltip(city, { x: d3.event.pageX, y: d3.event.pageY });
