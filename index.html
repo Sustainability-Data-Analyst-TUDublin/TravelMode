@@ -429,12 +429,6 @@
     function updatePercentageLabels() {
         // Update positions for percentage labels under icons
         svg.selectAll('.percentage-label')
-            .data(['Active', 'Public Transport', 'Private Cars'])
-           .enter()
-           .append('text')
-           .attr('class', 'percentage-label')
-           .attr('text-anchor', 'middle')
-           .text('0%')
            .attr("x", function(d, i) {
                // Adjust x-position based on icon position
                if (i === 0) return activePosition.x - 10; // Adjusted to move further left
